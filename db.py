@@ -64,6 +64,26 @@ def get_all_articles():
     rows = cursor.fetchall()
     conn.close()
     return rows
+def get_articles_without_summary():
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT id, title, link FROM articles
+        WHERE quick_summary IS NULL OR quick_summary = ''
+    """)
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
+
+
+def update_summary(article_id, summary):
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute("""
+        UPDATE articles SET quick_summary = ? WHERE id = ?
+    """, (summary, article_id))
+    conn.commit()
+    conn.close()
 
 
 if __name__ == "__main__":
