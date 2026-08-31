@@ -99,6 +99,25 @@ def update_full_text(article_id, text):
     cursor.execute("UPDATE articles SET full_text = ? WHERE id = ?", (text, article_id))
     conn.commit()
     conn.close()
+def get_articles_without_detailed_summary():
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT id, title, full_text FROM articles
+        WHERE (detailed_summary IS NULL OR detailed_summary = '')
+        AND full_text IS NOT NULL AND full_text != ''
+    """)
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
+
+
+def update_detailed_summary(article_id, summary):
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute("UPDATE articles SET detailed_summary = ? WHERE id = ?", (summary, article_id))
+    conn.commit()
+    conn.close()
 
 
 if __name__ == "__main__":
