@@ -6,7 +6,7 @@ def build_digest_html():
     articles = get_unsent_articles_full()
 
     if not articles:
-        return None  # nothing new to send
+        return None, []  # nothing new to send
 
     # Group articles by source
     grouped = {}
@@ -41,6 +41,7 @@ def build_digest_html():
                     {a['quick_summary']}
                 </p>
             """
+
             if a['detailed_summary']:
                 html += f"""
                 <details style="font-size: 13px; color: #555;">
@@ -48,6 +49,7 @@ def build_digest_html():
                     <p style="margin-top: 8px;">{a['detailed_summary']}</p>
                 </details>
                 """
+
             html += "</div>"
 
     html += """
@@ -56,15 +58,22 @@ def build_digest_html():
     </html>
     """
 
-    return html
+    # Return both the HTML and the IDs of the included articles
+    article_ids = [a[0] for a in articles]
+    return html, article_ids
 
 
 if __name__ == "__main__":
-    digest_html = build_digest_html()
+    digest_html, article_ids = build_digest_html()
+
     if digest_html is None:
         print("No unsent articles — nothing to compose.")
     else:
         with open("preview_digest.html", "w", encoding="utf-8") as f:
             f.write(digest_html)
+
         print("Digest HTML generated and saved to preview_digest.html")
-        print(f"Open it in your browser to preview: {__file__.replace('compose_email.py', 'preview_digest.html')}")
+        print(
+            f"Open it in your browser to preview: "
+            f"{__file__.replace('compose_email.py', 'preview_digest.html')}"
+        )

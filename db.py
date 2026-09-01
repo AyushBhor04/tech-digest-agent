@@ -130,6 +130,15 @@ def get_unsent_articles_full():
     rows = cursor.fetchall()
     conn.close()
     return rows
+def mark_articles_as_sent(article_ids):
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.executemany(
+        "UPDATE articles SET sent = 1 WHERE id = ?",
+        [(article_id,) for article_id in article_ids]
+    )
+    conn.commit()
+    conn.close()
 
 if __name__ == "__main__":
     init_db()
