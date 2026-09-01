@@ -118,7 +118,18 @@ def update_detailed_summary(article_id, summary):
     cursor.execute("UPDATE articles SET detailed_summary = ? WHERE id = ?", (summary, article_id))
     conn.commit()
     conn.close()
-
+def get_unsent_articles_full():
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT id, title, source, link, quick_summary, detailed_summary
+        FROM articles
+        WHERE sent = 0
+        ORDER BY source, id
+    """)
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
 
 if __name__ == "__main__":
     init_db()
