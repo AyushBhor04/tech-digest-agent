@@ -45,7 +45,7 @@ def build_digest_html():
             if a['detailed_summary']:
                 html += f"""
                 <details style="font-size: 13px; color: #555;">
-                    <summary style="cursor: pointer; color: #1a73e8;">Read more</summary>
+                    <summary style="cursor: pointer; color: #1a73e8; font-weight: 600;">More details</summary>
                     <p style="margin-top: 8px;">{a['detailed_summary']}</p>
                 </details>
                 """
