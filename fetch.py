@@ -6,7 +6,7 @@ FEEDS = {
     "arXiv CS": "http://export.arxiv.org/rss/cs",
 }
 
-MAX_ARTICLES_PER_SOURCE = 5
+MAX_ARTICLES_PER_SOURCE = 2
 
 
 def fetch_feed(name, url, limit=MAX_ARTICLES_PER_SOURCE):
