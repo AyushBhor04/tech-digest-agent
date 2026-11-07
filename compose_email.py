@@ -1,3 +1,4 @@
+
 from datetime import date
 from db import get_unsent_articles_full
 
@@ -5,18 +6,21 @@ from db import get_unsent_articles_full
 def build_digest_html():
     articles = get_unsent_articles_full()
 
+    # Keep only articles that actually have a detailed summary
+    articles = [a for a in articles if a[5]]
+
     if not articles:
-        return None, []  # nothing new to send
+        return None, []  # Nothing new to send
 
     # Group articles by source
     grouped = {}
+
     for article_id, title, source, link, quick_summary, detailed_summary in articles:
         grouped.setdefault(source, []).append({
             "id": article_id,
             "title": title,
             "link": link,
-            "quick_summary": quick_summary or "",
-            "detailed_summary": detailed_summary or ""
+            "summary": detailed_summary
         })
 
     today_str = date.today().strftime("%B %d, %Y")
@@ -29,6 +33,7 @@ def build_digest_html():
     """
 
     for source, source_articles in grouped.items():
+
         html += f'<h2 style="color: #444; font-size: 18px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">{source}</h2>'
 
         for a in source_articles:
@@ -38,19 +43,10 @@ def build_digest_html():
                     {a['title']}
                 </a>
                 <p style="font-size: 14px; color: #333; margin: 8px 0;">
-                    {a['quick_summary']}
+                    {a['summary']}
                 </p>
+            </div>
             """
-
-            if a['detailed_summary']:
-                html += f"""
-                <details style="font-size: 13px; color: #555;">
-                    <summary style="cursor: pointer; color: #1a73e8; font-weight: 600;">More details</summary>
-                    <p style="margin-top: 8px;">{a['detailed_summary']}</p>
-                </details>
-                """
-
-            html += "</div>"
 
     html += """
         </div>
@@ -58,8 +54,9 @@ def build_digest_html():
     </html>
     """
 
-    # Return both the HTML and the IDs of the included articles
+    # Return both the HTML and the IDs of included articles
     article_ids = [a[0] for a in articles]
+
     return html, article_ids
 
 

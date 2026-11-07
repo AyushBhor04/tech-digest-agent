@@ -103,10 +103,7 @@ def get_articles_without_full_text():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
-    cursor.execute("""
-        SELECT id, title, link FROM articles
-        WHERE full_text IS NULL OR full_text = ''
-    """)
+    cursor.execute("SELECT id, title, link FROM articles WHERE (full_text IS NULL OR full_text = '') AND sent = 0")
 
     rows = cursor.fetchall()
     conn.close()

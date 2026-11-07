@@ -2,7 +2,7 @@ from db import init_db
 from fetch import fetch_all_feeds
 from db import save_articles
 from fetch_full_text import fetch_all_full_texts
-from summarize import summarize_pending_articles, summarize_pending_detailed
+from summarize import summarize_pending_detailed
 from send_email import send_pending_digest
 
 
@@ -29,7 +29,6 @@ def run_pipeline():
 
     print("\n=== Step 4: Generating summaries ===")
     try:
-        summarize_pending_articles()
         summarize_pending_detailed()
     except Exception as e:
         print(f"Failed to generate summaries: {e}")
